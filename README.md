@@ -13,22 +13,15 @@ The agent runtime is built on [OpenManus](https://github.com/FoundationAgents/Op
 
 ## Architecture
 
-```text
-User
-  |  CLI: python main.py
-  |  Web: python app.py  ->  http://localhost:5172
-  v
-Manus agent
-  plan -> tool call -> observe -> next step
-  |
-  +-- LLM (OpenAI-compatible chat API, tool calling)
-  +-- web_search
-  +-- browser_use
-  |     Playwright drives a real Chromium window
-  |     GUI-Plus vision fallback: screenshot -> click / type
-  +-- knowledge/*.txt injected into the system prompt
-  +-- optional Daytona sandbox for isolated code execution
-```
+![Architecture](docs/architecture.svg)
+
+The loop is think, then act, then a stop check. Three pieces sit outside that loop and are easy to miss:
+
+- The task can enter from `python main.py` or from `python app.py`. The web console streams each think and act step over SSE; it does not wait for one final string.
+- Every model call also receives a system prompt: the role text, `knowledge/*.txt`, and the current time. In `OpenManus-rag` that file holds the Ctrip list-page URL pattern.
+- `browser_use` opens a visible Chromium window. When the DOM snapshot has no elements, GUI-Plus reads a screenshot and returns a click or a type. A screenshot can be stored on the next memory message. Code that must stay isolated can go to a Daytona sandbox instead of `python_execute`.
+
+The loop stops on the `terminate` tool, on `max_steps`, or on a token-limit error. Repeated identical replies add a “try another strategy” prompt. `max_steps` is 20 in `OpenManus-rag`, 30 in `OpenManus-gui`, and 50 in `OpenManus-cy`.
 
 | Piece | Role |
 | --- | --- |

@@ -13,22 +13,15 @@
 
 ## 架构
 
-```text
-用户
-  |  命令行：python main.py
-  |  网页：python app.py  ->  http://localhost:5172
-  v
-Manus Agent
-  规划 -> 调用工具 -> 观察结果 -> 下一步
-  |
-  +-- 大模型（OpenAI 兼容接口，支持工具调用）
-  +-- web_search 网页搜索
-  +-- browser_use 浏览器
-  |     Playwright 驱动一个可见的 Chromium 窗口
-  |     GUI-Plus 视觉兜底：截图 -> 点击 / 输入
-  +-- knowledge/*.txt 写进系统提示词
-  +-- 可选的 Daytona 沙箱，用来隔离执行代码
-```
+![架构](docs/architecture.svg)
+
+循环本身是 think、act，然后检查要不要停。图里补上了原先时序图没画出来的三块：
+
+- 任务可以从 `python main.py` 进入，也可以从 `python app.py` 进入。网页控制台用 SSE 把每一步 think 和 act 推到页面上，不是只等最后一句。
+- 每次调用模型还会带上系统提示词：角色说明、`knowledge/*.txt` 和当前时间。`OpenManus-rag` 的知识库里写了携程列表页的直达地址。
+- `browser_use` 用 Playwright 打开一个可见的 Chromium。DOM 快照里没有元素时，GUI-Plus 看截图，返回点击或输入。截图可以写进下一条记忆。需要隔离执行的代码可以走 Daytona 沙箱，而不是本机的 `python_execute`。
+
+循环在三种情况下结束：调用 `terminate`、达到 `max_steps`、或 token 超出上限。连续出现相同回复时，会追加一条“换策略”的提示。`max_steps` 在 `OpenManus-rag` 是 20，在 `OpenManus-gui` 是 30，在 `OpenManus-cy` 是 50。
 
 | 目录 | 作用 |
 | --- | --- |
