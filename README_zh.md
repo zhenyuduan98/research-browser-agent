@@ -28,8 +28,8 @@
 | `OpenManus-cy` | Agent 循环、工具，以及 Daytona 沙箱 |
 | `OpenManus-gui` | FastAPI 控制台，用来逐步看一次任务 |
 | `OpenManus-rag` | 启动前把 `knowledge/*.txt` 注入系统提示词 |
-| `CASE-gui-plus使用` | 单独调用视觉模型，让它返回一个 GUI 动作 |
-| `CASE-daytona使用` | 在 Daytona 沙箱里跑一段代码 |
+| `cases/gui-plus` | 单独调用视觉模型，让它返回一个 GUI 动作 |
+| `cases/daytona` | 在 Daytona 沙箱里跑一段代码 |
 
 系统提示词要求：机票价格、竞品说法这类实时信息必须来自工具返回，不能编造。
 
@@ -100,20 +100,20 @@ python main.py
 只检查视觉模型：
 
 ```bash
-cd CASE-gui-plus使用
-python 1-gui-plus使用.py
+cd cases/gui-plus
+python remote_screenshot.py
 ```
 
-检查沙箱：先把 `CASE-daytona使用/.env.example` 复制成 `.env` 并填入 Key，然后：
+检查沙箱：先把 `cases/daytona/.env.example` 复制成 `.env` 并填入 Key，然后：
 
 ```bash
-cd CASE-daytona使用
-python 1-daytona.py
+cd cases/daytona
+python sandbox_hello.py
 ```
 
 ## 配置
 
-`config/config.toml` 在 `.gitignore` 里，不会上传。把 `config/config.example.toml` 复制成 `config/config.toml`，`api_key` 留空，或只在自己的电脑上填写。`api_key` 为空时，进程读取环境变量 `DASHSCOPE_API_KEY`。默认对话模型是 `qwen-max`，视觉模型是 `qwen-vl-plus`，都走百炼的 OpenAI 兼容接口。`CASE-daytona使用/.env` 同样被忽略，从 `.env.example` 复制一份再填写。
+`config/config.toml` 在 `.gitignore` 里，不会上传。把 `config/config.example.toml` 复制成 `config/config.toml`，`api_key` 留空，或只在自己的电脑上填写。`api_key` 为空时，进程读取环境变量 `DASHSCOPE_API_KEY`。默认对话模型是 `qwen-max`，视觉模型是 `qwen-vl-plus`，都走百炼的 OpenAI 兼容接口。`cases/daytona/.env` 同样被忽略，从 `.env.example` 复制一份再填写。
 
 ## 致谢
 

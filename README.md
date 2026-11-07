@@ -1,6 +1,6 @@
 # Research Browser Agent
 
-[中文说明](README_zh.md)
+[Chinese](README_zh.md)
 
 A browser agent that helps a user finish web research which otherwise means opening sites, filling forms, and reading the results by hand.
 
@@ -28,8 +28,8 @@ The loop stops on the `terminate` tool, on `max_steps`, or on a token-limit erro
 | `OpenManus-cy` | Agent loop, tools, and the Daytona sandbox |
 | `OpenManus-gui` | FastAPI console used to watch a task step by step |
 | `OpenManus-rag` | Loads `knowledge/*.txt` into the system prompt before the first step |
-| `CASE-gui-plus使用` | Small script that asks a vision model for one GUI action |
-| `CASE-daytona使用` | Small script that runs code inside a Daytona sandbox |
+| `cases/gui-plus` | Small scripts that ask a vision model for one GUI action |
+| `cases/daytona` | Small script that runs code inside a Daytona sandbox |
 
 The model never receives a flight price or a competitor claim unless a tool returned it. The system prompt tells the agent not to invent live data.
 
@@ -55,7 +55,7 @@ What the run shows:
 Ask the agent to look up flights on Ctrip. A tested prompt is:
 
 ```text
-搜索圣诞节飞悉尼的携程机票
+Search Ctrip for flights to Sydney on Christmas Day.
 ```
 
 What the run shows:
@@ -100,20 +100,20 @@ python main.py
 Vision-only check:
 
 ```bash
-cd CASE-gui-plus使用
-python 1-gui-plus使用.py
+cd cases/gui-plus
+python remote_screenshot.py
 ```
 
-Sandbox check, after copying `CASE-daytona使用/.env.example` to `.env`:
+Sandbox check, after copying `cases/daytona/.env.example` to `.env`:
 
 ```bash
-cd CASE-daytona使用
-python 1-daytona.py
+cd cases/daytona
+python sandbox_hello.py
 ```
 
 ## Configuration
 
-`config/config.toml` is gitignored. Copy `config/config.example.toml` to `config/config.toml` and leave `api_key` empty, or fill it only on your machine. An empty `api_key` makes the process read `DASHSCOPE_API_KEY`. The default chat model is `qwen-max`, and the vision model is `qwen-vl-plus`, both through DashScope's OpenAI-compatible endpoint. `CASE-daytona使用/.env` is also gitignored; start from `.env.example`.
+`config/config.toml` is gitignored. Copy `config/config.example.toml` to `config/config.toml` and leave `api_key` empty, or fill it only on your machine. An empty `api_key` makes the process read `DASHSCOPE_API_KEY`. The default chat model is `qwen-max`, and the vision model is `qwen-vl-plus`, both through DashScope's OpenAI-compatible endpoint. `cases/daytona/.env` is also gitignored; start from `.env.example`.
 
 ## Acknowledgements
 

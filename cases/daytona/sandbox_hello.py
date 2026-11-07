@@ -10,22 +10,22 @@ except ImportError:
 
 api_key = os.getenv("DAYTONA_API_KEY")
 if not api_key:
-    print("错误: 未找到 DAYTONA_API_KEY。请通过以下方式之一设置:")
-    print("  1. 创建 .env 文件，添加: DAYTONA_API_KEY=your-api-key")
-    print("  2. 在系统环境变量中设置 DAYTONA_API_KEY")
-    print("  3. 安装 python-dotenv: pip install python-dotenv")
+    print("Error: DAYTONA_API_KEY was not found. Set it in one of these ways:")
+    print("  1. Create a .env file with: DAYTONA_API_KEY=your-api-key")
+    print("  2. Set DAYTONA_API_KEY in the environment")
+    print("  3. Install python-dotenv: pip install python-dotenv")
     sys.exit(1)
 
 config = DaytonaConfig(api_key=api_key)
 
 daytona = Daytona(config)
 
-# 创建沙箱实例
+# Create a sandbox
 sandbox = daytona.create()
 
-# 在沙箱中安全地运行代码
+# Run code inside the sandbox
 response = sandbox.process.code_run('print("Hello World from code!")')
 if response.exit_code != 0:
-  print(f"错误: {response.exit_code} {response.result}")
+  print(f"Error: {response.exit_code} {response.result}")
 else:
     print(response.result)
